@@ -1,7 +1,9 @@
-import  express  from "express";
+import  express, { request, response }  from "express";
 import { Book } from '../models/bookModel.js'
 
 const router = express.Router();
+
+
 
 //Route for save a new book
 router.post('/', async (request,response) => {
@@ -42,6 +44,24 @@ router.get('/', async (request,response) => {
         response.status(500).send({message: error.message})
     }
 })
+//Route for Searching a book
+router.get('/search', async (request, response) => {
+    const { query } = request.query; // Get the search query from the request
+  
+    try {
+      const results = await Book.find({
+        $or: [
+          { title: { $regex: query, $options: 'i' } }, // Case-insensitive title search
+          { author: { $regex: query, $options: 'i' } }, // Case-insensitive author search
+        ],
+      });
+  
+      response.json(results);
+    } catch (err) {
+      console.error(err);
+      response.status(500).json({ message: 'Server Error' });
+    }
+  });
 
 //Route for get one book by id
 router.get('/:id', async (request,response) => {
@@ -71,6 +91,7 @@ router.put('/:id', async (request,response) => {
         })
      }   
      const { id } = request.params;
+     const { title } = request.params;
      const result = await Book.findByIdAndUpdate(id, request.body);
      if(!result) {
         return response.status(404).json({ message: 'Book not found'});
@@ -98,5 +119,7 @@ router.delete('/:id', async (request,response) => {
         response.status(500).send({ message: error.message})
     }
 })
+
+
 
 export default router;

@@ -8,6 +8,8 @@ import {BsInfoCircle} from 'react-icons/bs'
 import {MdOutlineAddBox, MdOutlineDelete} from 'react-icons/md'
 import BooksTable from '../components/home/BooksTable'
 import BooksCard from '../components/home/BooksCard'
+import BookSearch from './SearchBook'; 
+
 
 function Home() {
 const [books, setBooks] = useState([]);
@@ -48,7 +50,7 @@ axios.get('http://localhost:5555/books')
          </div>
          {loading ? <Spinner /> : showType === "table" ? (<BooksTable books={books} />) : (<BooksCard books={books} />)  
          }
-
+<div className='search'><BookSearch /></div>
     </div>
   )
 }
